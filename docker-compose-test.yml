@@ -1,0 +1,14 @@
+version: '3'
+services:
+  my-job-offers-app-test-db:
+    image: postgres:17
+    restart: always
+    env_file:
+      - .env.test
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
