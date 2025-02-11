@@ -1,4 +1,4 @@
-Below is an updated README file that reflects your project's structure and environment configuration details. In this version, unit tests are co‑located with their code files (instead of being in a separate folder), and the provided environment files and Docker Compose configuration are intended primarily for development (and can also be used in production with minimal changes), since explicit production support is not implemented.
+Below is an updated version of your README file with a dedicated note before the end-to-end testing instructions. This note reminds users to start the test database and configure the `.env.test` file before running the e2e tests.
 
 ---
 
@@ -66,9 +66,9 @@ my-job-offers-app/
 │   │   ├── job-offers/              // Job Offers module
 │   │   │   ├── dto/                 // Data Transfer Objects (e.g., job-offer.dto.ts)
 │   │   │   ├── entities/            // Database entities (e.g., job-offer.entity.ts)
+│   │   │   ├── repositories/        // Database repositories (e.g., job-offers.repository.ts)
 │   │   │   ├── job-offers.controller.ts   // REST API controller
 │   │   │   ├── job-offers.service.ts        // Business logic and error handling
-│   │   │   └── job-offers.repository.ts     // Repository (or repository service) abstraction
 │   │   └── api-integration/         // External API integration module
 │   │       ├── adapters/            // Adapters for external APIs
 │   │       │   ├── api1.adapter.ts
@@ -86,7 +86,7 @@ my-job-offers-app/
 └── README.md                        // Project documentation (this file)
 ```
 
-> **Note:** Unit tests are co‑located with their code files (i.e., next to the code they test) rather than in a separate folder.
+> **Note:** Unit tests are co‑located with their corresponding source files (i.e., next to the code they test) rather than in a separate folder.
 
 ## Setup Instructions
 
@@ -288,6 +288,17 @@ npm run test
 
 ### Running End-to-End Tests
 
+Before running end-to-end tests, **ensure that:**
+1. You have started the test database by running:
+   ```bash
+   docker compose -f docker-compose-test.yml up -d
+   ```
+2. You have copied and configured the test environment file:
+   ```bash
+   cp .env.test.example .env.test
+   ```
+   Then update `.env.test` with the appropriate values (e.g., test database credentials).
+
 To run end-to-end tests:
 
 ```bash
@@ -348,10 +359,10 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ### Final Note
 
 - **Environment Files:**  
-  Users should copy `.env.example` to `.env` and `.env.test.example` to `.env.test` and then customize these files as needed.
+  Copy `.env.example` to `.env` for development/production and `.env.test.example` to `.env.test` for testing. Customize them as needed.
 - **Docker Files:**  
-  The provided `docker-compose.yml` and `docker-compose-test.yml` files are intended for development (and may also be used in production) since explicit production support is not implemented.
-- **Tests:**  
-  Unit tests are located alongside their code files, while integration tests reside in the `test/` folder.
+  Use `docker-compose.yml` for development/production and `docker-compose-test.yml` for testing.  
+- **Testing:**  
+  **Important:** Before running end-to-end tests, ensure the test database is up and the test environment file is correctly configured.
 
-This README provides a comprehensive overview and instructions to get started with your project. Customize further as needed for your specific project details and requirements.
+This README now clearly instructs users to prepare the test environment before running e2e tests.

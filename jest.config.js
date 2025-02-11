@@ -8,9 +8,11 @@ module.exports = {
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
-  coverageDirectory: './coverage',
+  // Only collect coverage from files in the src folder
+  collectCoverageFrom: ['src/**/*.{js,ts}'],
   testEnvironment: 'node',
-  // Optional: Setup file to load .env.test (if needed)
   setupFiles: ['<rootDir>/test/setup.ts'],
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  coverageReporters: ['html', 'text', 'text-summary', 'lcov'],
 };

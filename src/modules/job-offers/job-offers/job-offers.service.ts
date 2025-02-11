@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JobOffer } from '../entities/job-offer.entity';
 import { JobOfferQueryDto } from '../dto/job-offer.dto';
-import { JobOfferRepositoryService } from '../job-offers.repository';
+import { JobOfferRepository } from 'src/modules/job-offers/repositories/job-offers.repository';
 import { retryWithExponentialBackoff } from 'src/shared/helpers/retry-with-exponential-backoff';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class JobOffersService {
   private readonly logger = new Logger(JobOffersService.name);
 
   constructor(
-    private readonly jobOfferRepositoryService: JobOfferRepositoryService,
+    private readonly jobOfferRepository: JobOfferRepository,
   ) {}
 
   /**
@@ -28,7 +28,7 @@ export class JobOffersService {
   ): Promise<{ data: JobOffer[]; total: number }> {
     try {
       return await retryWithExponentialBackoff(async () =>
-        this.jobOfferRepositoryService.getJobOffers(queryDto),
+        this.jobOfferRepository.getJobOffers(queryDto),
       );
     } catch (error) {
       this.logger.error(`Operation failed after retries: ${error.message}`);

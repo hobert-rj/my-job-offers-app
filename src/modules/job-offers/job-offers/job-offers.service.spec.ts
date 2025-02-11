@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ServiceUnavailableException } from '@nestjs/common';
 import { JobOffersService } from './job-offers.service';
-import { JobOfferRepositoryService } from '../job-offers.repository';
+import { JobOfferRepository } from 'src/modules/job-offers/repositories/job-offers.repository';
 import { JobOfferQueryDto } from '../dto/job-offer.dto';
 
 // We mock the retry helper so that we can control its behavior.
@@ -12,14 +12,14 @@ import { retryWithExponentialBackoff } from '../../../shared/helpers/retry-with-
 
 describe('JobOffersService', () => {
   let service: JobOffersService;
-  let repositoryService: JobOfferRepositoryService;
+  let repositoryService: JobOfferRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         JobOffersService,
         {
-          provide: JobOfferRepositoryService,
+          provide: JobOfferRepository,
           useValue: {
             getJobOffers: jest.fn(),
           },
@@ -28,7 +28,7 @@ describe('JobOffersService', () => {
     }).compile();
 
     service = module.get<JobOffersService>(JobOffersService);
-    repositoryService = module.get<JobOfferRepositoryService>(JobOfferRepositoryService);
+    repositoryService = module.get<JobOfferRepository>(JobOfferRepository);
   });
 
   afterEach(() => {
