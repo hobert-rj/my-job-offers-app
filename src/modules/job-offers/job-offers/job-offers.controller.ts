@@ -8,7 +8,9 @@ import {
 import { JobOffersService } from './job-offers.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JobOfferQueryDto } from '../dto/job-offer.dto';
-import { JobOffer } from '../entities/job-offer.entity';
+import { JobOffersResponseDto } from '../dto/job-offers-response.dto';
+import { plainToInstance } from 'class-transformer';
+import { JobOfferOutputDto } from 'src/modules/job-offers/dto/job-offer-output.dto';
 
 @ApiTags('Job Offers')
 @Controller('api/job-offers')
@@ -27,14 +29,27 @@ export class JobOffersController {
   @ApiResponse({
     status: 200,
     description: 'List of job offers retrieved successfully.',
+    type: JobOffersResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid query parameters.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async getJobOffers(
     @Query() queryDto: JobOfferQueryDto,
-  ): Promise<{ data: JobOffer[]; total: number }> {
+  ): Promise<JobOffersResponseDto> {
     try {
-      return await this.jobOffersService.getJobOffers(queryDto);
+      // The service returns an object with "data" (array of JobOffer entities) and "total"
+      const { data, total } =
+        await this.jobOffersService.getJobOffers(queryDto);
+
+      // Transform each JobOffer entity into JobOfferOutputDto
+      const transformedData = plainToInstance(
+        // This converts each element in the array:
+        JobOfferOutputDto,
+        data,
+        { excludeExtraneousValues: true },
+      );
+
+      return { data: transformedData, total };
     } catch (error) {
       throw new HttpException(
         { message: 'Failed to retrieve job offers', error: error.message },
